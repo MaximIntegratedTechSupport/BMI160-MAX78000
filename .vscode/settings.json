@@ -30,7 +30,9 @@
     "files.associations": {
         "bmi160.h": "c",
         "mxc_delay.h": "c",
-        "bmi160_max78000evkit.h": "c"
+        "bmi160_max78000evkit.h": "c",
+        "mxc_errors.h": "c",
+        "i2c.h": "c"
     },/*<-- Debugger to use.  
     Options :
     "cmsis-dap" (for PICO)
