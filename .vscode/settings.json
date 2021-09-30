@@ -32,7 +32,8 @@
         "mxc_delay.h": "c",
         "bmi160_max78000evkit.h": "c",
         "mxc_errors.h": "c",
-        "i2c.h": "c"
+        "i2c.h": "c",
+        "tft.h": "c"
     },/*<-- Debugger to use.  
     Options :
     "cmsis-dap" (for PICO)

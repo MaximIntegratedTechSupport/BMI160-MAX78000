@@ -46,7 +46,7 @@ int init_bmi160(struct bmi160_dev* out) {
     bmi160.delay_ms = delay_ms;
     bmi160.read = i2c_read;
     bmi160.write = i2c_write;
-    bmi160.id = BMI160_I2C_ADDR;
+    bmi160.id = BMI160_FOC_CONF_ADDR;
     bmi160.intf = BMI160_I2C_INTF; // Tell drivers to use I2C interface
 
     // Now that we've configured the struct properly for the EVKIT, call the driver init function.
