@@ -11,14 +11,23 @@ struct bmi160_sensor_data bmi160_gyro;
 struct bmi160_foc_conf bmi160_foc_conf;
 struct bmi160_offsets bmi160_offsets;
 
-#define ENABLE_GRAVITY  1   //enable data output in unit of gravatis
-#define ENABLE_BINARY   1   //enable data output in unit of binary sensor output  
+#define ENABLE_ACC_GRAVITY      1   //enable accelermoter data output in unit of gravatis
+#define ENABLE_GYR_DEG_PER_SEC  1   //enable gyrescope data output in units of degrees/second
+#define ENABLE_BINARY           1   //enable data output in unit of binary sensor output 
 
-#ifdef ENABLE_GRAVITY
+
+#ifdef ENABLE_ACC_GRAVITY
     float acc_x;
     float acc_y;
     float acc_z;
-    float Conversion_Factor;
+    float ACC_Conversion_Factor;
+#endif
+
+#ifdef ENABLE_GYR_DEG_PER_SEC
+    float gyr_x;
+    float gyr_y;
+    float gyr_z;
+    float GYR_Conversion_Factor;
 #endif
 
 // This test program shall initialize the BMI160, validate the built-in self-test, and test additional bmi160 driver functions.
@@ -66,16 +75,28 @@ int main() {
         printf("Observed Accelerometer and Gyrescope Data\n");
         printf("------------------------------------------\n\n");
         
-        if(ENABLE_GRAVITY){
+        if(ENABLE_ACC_GRAVITY){
 
             //Caluculate force in terms of g's
-            acc_x = bmi160_accel.x/Conversion_Factor;
-            acc_y = bmi160_accel.y/Conversion_Factor;
-            acc_z = bmi160_accel.z/Conversion_Factor;
+            acc_x = bmi160_accel.x/ACC_Conversion_Factor;
+            acc_y = bmi160_accel.y/ACC_Conversion_Factor;
+            acc_z = bmi160_accel.z/ACC_Conversion_Factor;
             
             printf("Gravities:\n");
             //print results
             printf("ax:%.2f g\tay:%.2f g\taz:%.2f g\n\n", acc_x, acc_y, acc_z);
+        }
+
+        if(ENABLE_GYR_DEG_PER_SEC){
+
+            //Caluculate force in terms of g's
+            gyr_x = bmi160_gyro.x/GYR_Conversion_Factor;
+            gyr_y = bmi160_gyro.y/GYR_Conversion_Factor;
+            gyr_z = bmi160_gyro.z/GYR_Conversion_Factor;
+            
+            printf("Degrees per second:\n");
+            //print results
+            printf("ax:%.1f deg/s\tay:%.1f deg/s\taz:%.1f deg/s\n\n", gyr_x, gyr_y, gyr_z);
         }
 
         if(ENABLE_BINARY){
@@ -113,28 +134,58 @@ void ConfigureSensor_bmi160(void){
     bmi160.gyro_cfg.power = BMI160_GYRO_NORMAL_MODE;
 
 
-    //Set Conversion Factor for gravity calculations
-    if(ENABLE_GRAVITY){
+    //Set Conversion Factor for accelerometer gravity calculations
+    if(ENABLE_ACC_GRAVITY){
         switch(bmi160.accel_cfg.range){
         
             case BMI160_ACCEL_RANGE_2G:
-                Conversion_Factor = 16384.0;
+                ACC_Conversion_Factor = 16384.0;
                 break;
 
             case BMI160_ACCEL_RANGE_4G:
-                Conversion_Factor = 8192.0;
+                ACC_Conversion_Factor = 8192.0;
                 break;
 
             case BMI160_ACCEL_RANGE_8G:
-                Conversion_Factor = 4096.0;
+                ACC_Conversion_Factor = 4096.0;
                 break;
 
             case BMI160_ACCEL_RANGE_16G:
-                Conversion_Factor = 2048.0;
+                ACC_Conversion_Factor = 2048.0;
                 break;
 
             default:
-                Conversion_Factor = 2048.0;
+                ACC_Conversion_Factor = 2048.0;
+                break;
+        }
+    }
+
+    //Set Conversion Factor for gyrescope deg/s calculations
+    if(ENABLE_GYR_DEG_PER_SEC){
+        switch(bmi160.accel_cfg.range){
+        
+            case BMI160_GYRO_RANGE_125_DPS:
+                GYR_Conversion_Factor = 262.4;
+                break;
+
+            case BMI160_GYRO_RANGE_250_DPS:
+                GYR_Conversion_Factor = 131.2;
+                break;
+
+            case BMI160_GYRO_RANGE_500_DPS:
+                GYR_Conversion_Factor = 65.6;
+                break;
+
+            case BMI160_GYRO_RANGE_1000_DPS:
+                GYR_Conversion_Factor = 32.8;
+                break;
+
+            case BMI160_GYRO_RANGE_2000_DPS:
+                GYR_Conversion_Factor = 16.4;
+                break;
+
+            default:
+                GYR_Conversion_Factor = 16.4;
                 break;
         }
     }
