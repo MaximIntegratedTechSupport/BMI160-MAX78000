@@ -8,7 +8,7 @@
 // Local defines
 ////////////////////////////
 #define I2C_MASTER      MXC_I2C2        
-#define I2C_FREQ        500000          //Frequency set in Hz, Max = 1MHz
+#define I2C_FREQ        100000          //Frequency set in Hz
 #define I2C_CONFIG      1               //Set to 1 for Master, 0 for Slave
 
 ////////////////////////////
@@ -40,7 +40,11 @@ static int8_t i2c_write(uint8_t dev_addr, uint8_t reg_addr, uint8_t *data, uint1
 
 // BMI160 initialization function.  Users should call this function instead of the built-in "bmi160_init" function from bmi160.h
 int init_bmi160(struct bmi160_dev* out) {
-    I2C_init();
+
+    if((error = I2C_init()) != E_NO_ERROR){
+        printf("Error Configuring I2C2\n");
+        return E_BAD_STATE;
+    }
 
     // TODO: Configure bmi160 struct properly.  See https://github.com/BoschSensortec/BMI160_driver/blob/master/examples/read_chip_id/read_chip_id.c and https://github.com/MaximIntegratedAI/refdes/blob/main/maxrefdes178-UNet/maxrefdes178_max32666/src/max32666_accel.c for examples
     bmi160.delay_ms = delay_ms;
@@ -72,11 +76,10 @@ static int I2C_init() {
     }
     
     //Set the frequency of communication over I2C port
-    if(MXC_I2C_SetFrequency(I2C_MASTER, I2C_FREQ) != E_NO_ERROR){
-        printf("Error setting I2C speed\n");
+    if((error = MXC_I2C_SetFrequency(I2C_MASTER, I2C_FREQ)) < E_NO_ERROR){
+        printf("Error setting I2C speed (Error: %d)\n",error);
         return E_BAD_PARAM;
     }
-
 
     return E_SUCCESS;
 }
