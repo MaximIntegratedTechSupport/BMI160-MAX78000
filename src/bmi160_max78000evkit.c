@@ -1,10 +1,51 @@
+/*******************************************************************************
+* Copyright (C) Maxim Integrated Products, Inc., All Rights Reserved.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"),
+* to deal in the Software without restriction, including without limitation
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
+* and/or sell copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included
+* in all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+* OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+* IN NO EVENT SHALL MAXIM INTEGRATED BE LIABLE FOR ANY CLAIM, DAMAGES
+* OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+* ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+* OTHER DEALINGS IN THE SOFTWARE.
+*
+* Except as contained in this notice, the name of Maxim Integrated
+* Products, Inc. shall not be used except as stated in the Maxim Integrated
+* Products, Inc. Branding Policy.
+*
+* The mere transfer of this software does not imply any licenses
+* of trade secrets, proprietary technology, copyrights, patents,
+* trademarks, maskwork rights, or any other form of intellectual
+* property whatsoever. Maxim Integrated Products, Inc. retains all
+* ownership rights.
+*******************************************************************************
+*/
+/**
+* @file             bmi160_max78000evkit.c
+* @brief            This file holds all driver function source code. Driver functions
+                    and parameters are explicitly listed in the bmi160_max78000evkit.h
+                    header file. Use the header file for sensor configuration.
+* @version          1.0.0
+* @notes            
+*****************************************************************************/
+
 #include <stdio.h>
 #include "bmi160_max78000evkit.h"
 #include "mxc_delay.h"
 #include "i2c.h"
 #include "i2c_regs.h"
 
-/*  Global Variables and Structures */  
+/*****  Global Variables *****/  
 
 mxc_i2c_req_t reqMaster = {
     .addr = 0x00,
@@ -17,22 +58,21 @@ mxc_i2c_req_t reqMaster = {
     .tx_len = 0
 };
 
-uint8_t error;
-
-/*  Function Prototypes */
+/***** Function Prototypes *****/
 
 static void delay_ms(uint32_t ms);
 static int I2C_init();
 static int8_t i2c_read(uint8_t dev_addr, uint8_t reg_addr, uint8_t *data, uint16_t len);
 static int8_t i2c_write(uint8_t dev_addr, uint8_t reg_addr, uint8_t *data, uint16_t len);
 
-/*  Driver implementation   */
+/***** Driver implementation *****/
 
-// BMI160 initialization function.  Users should call this function instead of the built-in "bmi160_init" function from bmi160.h
 int init_bmi160(struct bmi160_dev* out) {
 
-    if((error = I2C_init()) != E_NO_ERROR){
-        printf("Error Configuring I2C2\n");
+    int rslt = BMI160_OK;
+
+    if((rslt = I2C_init()) != E_NO_ERROR){
+        printf("Error Configuring I2C2 (Error: %d)\n",rslt);
         return E_BAD_STATE;
     }
 
@@ -43,8 +83,7 @@ int init_bmi160(struct bmi160_dev* out) {
     bmi160.intf = BMI160_I2C_INTF; // Tell drivers to use I2C interface
 
     // Now that we've configured the struct properly for the EVKIT, call the driver init function.
-    int8_t result;
-    if ( (result = bmi160_init(&bmi160)) != BMI160_OK) {
+    if ((rslt = bmi160_init(&bmi160)) != BMI160_OK) {
         return BMI160_E_DEV_NOT_FOUND;
     }
 
@@ -54,31 +93,36 @@ int init_bmi160(struct bmi160_dev* out) {
     return BMI160_OK;
 }
 
-
+/*****************************************************************************************************************************/
 static void delay_ms(uint32_t ms) {
     MXC_Delay(MXC_DELAY_MSEC(ms));
 }
 
-
+/*****************************************************************************************************************************/
 static int I2C_init() {
+
+    int rslt= E_NO_ERROR;
+
     //Initilize the I2C Port as a master
-    if(MXC_I2C_Init(I2C_MASTER, I2C_CONFIG, 0) != E_NO_ERROR){
-        printf("Error initializing the I2C Port 2\n");
+    if((rslt = MXC_I2C_Init(I2C_MASTER, I2C_CONFIG, 0)) != E_NO_ERROR){
+        printf("Error initializing the I2C Port 2 (Error: %d)\n",rslt);
         return E_BAD_PARAM;
     }
     
     //Set the frequency of communication over I2C port
-    if((error = MXC_I2C_SetFrequency(I2C_MASTER, I2C_FREQ)) < E_NO_ERROR){
-        printf("Error setting I2C speed (Error: %d)\n",error);
+    if((rslt = MXC_I2C_SetFrequency(I2C_MASTER, I2C_FREQ)) < E_NO_ERROR){
+        printf("Error setting I2C speed (Error: %d)\n",rslt);
         return E_BAD_PARAM;
     }
 
     return E_SUCCESS;
 }
 
-
+/*****************************************************************************************************************************/
 static int8_t i2c_read(uint8_t dev_addr, uint8_t reg_addr, uint8_t *data, uint16_t len) {
     
+    int rslt = BMI160_OK;
+
     //Set paramaters for I2C read
     reqMaster.addr = dev_addr;          //Set device address 
     reqMaster.tx_buf = &reg_addr;       //Pointer to register address
@@ -86,11 +130,11 @@ static int8_t i2c_read(uint8_t dev_addr, uint8_t reg_addr, uint8_t *data, uint16
     reqMaster.rx_buf = data;            //Pointer to structure to store read values
     reqMaster.rx_len = len;             //Number of bytes to read
 
-    if ((error = MXC_I2C_MasterTransaction(&reqMaster)) != E_NO_ERROR) {
+    if ((rslt = MXC_I2C_MasterTransaction(&reqMaster)) != E_NO_ERROR) {
         
         //Communication error
-        if(error != 1){
-            printf("Error (%d) reading data: Device = 0x%X; Register = 0x%X\n", error, dev_addr, reg_addr);
+        if(rslt != 1){
+            printf("Error (%d) reading data: Device = 0x%X; Register = 0x%X\n", rslt, dev_addr, reg_addr);
             return BMI160_E_COM_FAIL;
         }
         //Message not acknowledged
@@ -103,9 +147,11 @@ static int8_t i2c_read(uint8_t dev_addr, uint8_t reg_addr, uint8_t *data, uint16
     return BMI160_OK;
 }
 
-
+/*****************************************************************************************************************************/
 static int8_t i2c_write(uint8_t dev_addr, uint8_t reg_addr, uint8_t *data, uint16_t len) {
     
+    int rslt = BMI160_OK;
+
     //Allocate memory for register address and data
     uint8_t *TXData = (uint8_t *)malloc(sizeof(data)+sizeof(reg_addr));
     memcpy(TXData, &reg_addr, 1);
@@ -119,10 +165,10 @@ static int8_t i2c_write(uint8_t dev_addr, uint8_t reg_addr, uint8_t *data, uint1
     reqMaster.rx_len = 0;               //Number of bytes to read
 
     //Send I2C data
-    if ((error = MXC_I2C_MasterTransaction(&reqMaster)) != E_NO_ERROR) {
+    if ((rslt = MXC_I2C_MasterTransaction(&reqMaster)) != E_NO_ERROR) {
         //Communication error
-        if(error != 1){
-            printf("Error (%d) writing data: Device = 0x%X; Register = 0x%X\n", error, dev_addr, reg_addr);
+        if(rslt != 1){
+            printf("Error (%d) writing data: Device = 0x%X; Register = 0x%X\n", rslt, dev_addr, reg_addr);
             return BMI160_E_COM_FAIL;
         }
         //Message not acknowledged
@@ -137,10 +183,10 @@ static int8_t i2c_write(uint8_t dev_addr, uint8_t reg_addr, uint8_t *data, uint1
     return BMI160_OK;
 }
 
-
+/*****************************************************************************************************************************/
 int bmi160_config_sensor(struct bmi160_dev *device){
     
-    int rslt = 0;
+    int rslt = BMI160_OK;
 
     switch(ACCELEROMETER_RANGE){
         case 0:
@@ -330,7 +376,7 @@ int bmi160_config_sensor(struct bmi160_dev *device){
     return (BMI160_OK);
 }
 
-
+/*****************************************************************************************************************************/
 int bmi160_FOC_init(struct bmi160_dev *device){
     
     int rslt = BMI160_OK;

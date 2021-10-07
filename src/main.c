@@ -1,13 +1,63 @@
+/*******************************************************************************
+* Copyright (C) Maxim Integrated Products, Inc., All Rights Reserved.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a
+* copy of this software and associated documentation files (the "Software"),
+* to deal in the Software without restriction, including without limitation
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
+* and/or sell copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included
+* in all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+* OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+* IN NO EVENT SHALL MAXIM INTEGRATED BE LIABLE FOR ANY CLAIM, DAMAGES
+* OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+* ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+* OTHER DEALINGS IN THE SOFTWARE.
+*
+* Except as contained in this notice, the name of Maxim Integrated
+* Products, Inc. shall not be used except as stated in the Maxim Integrated
+* Products, Inc. Branding Policy.
+*
+* The mere transfer of this software does not imply any licenses
+* of trade secrets, proprietary technology, copyrights, patents,
+* trademarks, maskwork rights, or any other form of intellectual
+* property whatsoever. Maxim Integrated Products, Inc. retains all
+* ownership rights.
+*******************************************************************************
+*/
+/**
+* @file             main.c
+* @brief            This is the main test program for the MAX78000 EVkit BMI160 IMU drivers.
+*                   This main function will perform five (5) basic driver functions:
+*                       1) Initilize the BMI160 IMU
+*                       2) Perform BMI160 self-test for accelerometer and verify result
+*                       3) Perform BMI160 self-test for Gyrescope and verify results
+*                       4) Configure the accelerometer and gyrescope based on user definitions
+*                           in the bmi160_max78000evkit.h header file
+*                       5) Continuosly read and display the BMI160 sesor data in format(s)
+*                           specefied by user in the bmi160_max78000evkit.h header file
+*                   All sensor readings will be sent through the Comm port of the MAX78000
+*                   EVKit (default baud = 115200). It can be viewed with any serial monitor
+*                   program when device is connected to a PC.
+* @version          1.0.0
+* @notes            
+*****************************************************************************/
+
 #include <stdio.h>
-#include <math.h>
 #include "bmi160_max78000evkit.h"
+
+/*  Global Variables for Conversion calculations  */
 
 //Structurs for holding Data being read
 struct bmi160_sensor_data bmi160_accel;
 struct bmi160_sensor_data bmi160_gyro;
 
-/*  Global Variables for Conversion calculations  */
-
+//Float Variables for Accelerometer Force Calculations
 #ifdef ENABLE_ACC_GRAVITY
     float acc_x;
     float acc_y;
@@ -15,12 +65,14 @@ struct bmi160_sensor_data bmi160_gyro;
     float ACC_Conversion_Factor = (float)(16384 >> ACCELEROMETER_RANGE);
 #endif
 
+//Float Variables for Gyrescope Degrees/Second Calculations
 #ifdef ENABLE_GYR_DEG_PER_SEC
     float gyr_x;
     float gyr_y;
     float gyr_z;
     float GYR_Conversion_Factor = (float)(262.4/(1<<GYRESCOPE_RANGE));
 #endif
+
 
 // This test program shall initialize the BMI160, validate the built-in self-test, and test additional bmi160 driver functions.
 int main() {
@@ -55,7 +107,7 @@ int main() {
     }
     else printf("SUCCESS\n");
 
-    //Set default config for sensors
+    //Set default config for sensors (Settings are specefied in bmi160_max78000.h file)
     printf("Result for Sensor Configuration: ");
     if ((result = bmi160_config_sensor(&bmi160)) != BMI160_OK) {    
         printf("FAILURE\n");
@@ -120,6 +172,5 @@ int main() {
         
         //Delay between samples
         bmi160.delay_ms(SAMPLE_DELAY);   
-
     }
 }
