@@ -41,4 +41,4 @@ The sample program in main.c pulls configuration information from the bmi160_max
 In order to adapt these settings, you can change definition values based on the bmi160_defs.h file. In order to view possible configuration options, us **ctrl+click** on the option you would like to configure. For example, if you **ctrl+click** the *BMI160_ACCEL_RANGE_16G*, the decleration of the sensor configuration defintions should appear, as shown below.
 ![Serial Monitor Setup](https://github.com/MaximIntegratedTechSupport/BMI160-MAX78000/blob/master/img/Config_List.jpg)
 
-*NOTE: Any of the predefined configurations should be compatible with the sensor configuration function. Please refer to the [BMI160 Design Guide](https://community.bosch-sensortec.com/t5/Knowledge-base/BMI160-Series-IMU-Design-Guide/ta-p/7376) for configuration specefic questions.*
+*NOTE: Any of the predefined configurations are compatible with the sensor configuration function. Please refer to the [BMI160 Design Guide](https://community.bosch-sensortec.com/t5/Knowledge-base/BMI160-Series-IMU-Design-Guide/ta-p/7376) for configuration specefic information.*
