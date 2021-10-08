@@ -55,7 +55,7 @@
 
 //Serial Output Settings    
 #define ENABLE_ACC_GRAVITY      1   //Accelermoter data output in unit of gravatis (0: DISABLE, 1: *ENABLE)
-#define ENABLE_GYR_DEG_PER_SEC  1   //Gyrescope data output in units of degrees/second  (0: DISABLE, 1: *ENABLE)
+#define ENABLE_GYR_DEG_PER_SEC  1   //gyroscope data output in units of degrees/second  (0: DISABLE, 1: *ENABLE)
 #define ENABLE_BINARY           1   //Data output in unit of binary sensor output   (0: DISABLE, 1: *ENABLE)
 
 //Accelerometer settings
@@ -64,11 +64,11 @@
 #define ACCELEROMETER_BANDWITH  2   //0: AVG 1, 1: AVG 2,   2: *AVG 4,   3: AVG 8,   4: AVG 16,  5: AVG 32,  6: AVG 64,  7: AVG 128
 #define ACCELEROMETER_POWER     0   //0: *NORMAL,    1: LOW-POWER, 2: SUSPEND
 
-//Gyrescope settings
-#define GYRESCOPE_RANGE         4   //0: 125 dps,   1: 250 dps, 2: 500 dps, 3: 1000 dps,    4: *2000 dps
-#define GYRESCOPE_DATARATE      2   //0: 25 Hz,   1: 50 Hz,   2: *100 Hz,  3: 200 Hz,  4: 400 Hz,  5: 800 Hz,  6: 1600 Hz,   7: 3200 Hz
-#define GYRESCOPE_BANDWITH      0   //0: *NORMAL,    1: OVERSAMPLE 2x,   2: OVERSAMPLE 4x
-#define GYRESCOPE_POWER         0   //0: *NORMAL,    1: FAST-START,   2: SUSPEND
+//gyroscope settings
+#define GYROSCOPE_RANGE         4   //0: 125 dps,   1: 250 dps, 2: 500 dps, 3: 1000 dps,    4: *2000 dps
+#define GYROSCOPE_DATARATE      2   //0: 25 Hz,   1: 50 Hz,   2: *100 Hz,  3: 200 Hz,  4: 400 Hz,  5: 800 Hz,  6: 1600 Hz,   7: 3200 Hz
+#define GYROSCOPE_BANDWITH      0   //0: *NORMAL,    1: OVERSAMPLE 2x,   2: OVERSAMPLE 4x
+#define GYROSCOPE_POWER         0   //0: *NORMAL,    1: FAST-START,   2: SUSPEND
 
 //Accelerometer Offset Compensation (Default assumes MAX78000 EVKit is sitting on a flat surface display facing upwards)
 #define ACCELEROMETER_COMP_X    3   //0: DISABLED,  1: Positive 1g, 2: Negative 1g, 3: *Zero Force
@@ -97,7 +97,7 @@ struct bmi160_dev bmi160;       // Global bmi160 struct
 int init_bmi160();
 
 /**
-* @brief        Configure BMI160 accelerometer and gyrescope based on user definitions in 
+* @brief        Configure BMI160 accelerometer and gyroscope based on user definitions in 
 *               the bmi160_max78000.h header file
 *
 * @param[in]    device      Pointer to initialized, bmi160 structure
@@ -106,7 +106,7 @@ int init_bmi160();
 int bmi160_config_sensor(struct bmi160_dev *device);
 
 /**
-* @brief        Initialize and enable the gyrescope and accelerometer fast offset
+* @brief        Initialize and enable the gyroscope and accelerometer fast offset
 *               compensation feature
 *
 * @param[in]    device      Pointer to initialized, bmi160 structure

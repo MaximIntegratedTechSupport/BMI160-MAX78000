@@ -282,7 +282,7 @@ int bmi160_config_sensor(struct bmi160_dev *device){
             return BMI160_E_OUT_OF_RANGE;
     }
 
-    switch(GYRESCOPE_RANGE){
+    switch(GYROSCOPE_RANGE){
         case 0:
             bmi160.gyro_cfg.range = BMI160_GYRO_RANGE_125_DPS;
             break;
@@ -299,11 +299,11 @@ int bmi160_config_sensor(struct bmi160_dev *device){
             bmi160.gyro_cfg.range = BMI160_GYRO_RANGE_2000_DPS;
             break;
         default:
-            printf("ERROR: Invalid Gyrescope Range\n");
+            printf("ERROR: Invalid Gyrosocope Range\n");
             return BMI160_E_OUT_OF_RANGE; 
     }
     
-    switch(GYRESCOPE_DATARATE){
+    switch(GYROSCOPE_DATARATE){
         case 0:
             bmi160.gyro_cfg.odr = BMI160_GYRO_ODR_25HZ;
             break;
@@ -329,12 +329,12 @@ int bmi160_config_sensor(struct bmi160_dev *device){
             bmi160.gyro_cfg.odr = BMI160_GYRO_ODR_3200HZ;
             break;
         default:
-            printf("ERROR: Invalid Gyrescope Data Rate\n");
+            printf("ERROR: Invalid Gyroscope Data Rate\n");
             return BMI160_E_OUT_OF_RANGE;
             break;
     }
     
-    switch(GYRESCOPE_BANDWITH){
+    switch(GYROSCOPE_BANDWITH){
         case 0:
             bmi160.gyro_cfg.bw = BMI160_GYRO_BW_NORMAL_MODE;
             break;
@@ -345,11 +345,11 @@ int bmi160_config_sensor(struct bmi160_dev *device){
             bmi160.gyro_cfg.bw = BMI160_GYRO_BW_OSR4_MODE;
             break;
         default:
-            printf("ERROR: Invalid Gyrescope Sample rate\n");
+            printf("ERROR: Invalid Gyroscope Sample rate\n");
             return BMI160_E_OUT_OF_RANGE;
     }
 
-    switch(GYRESCOPE_POWER){
+    switch(GYROSCOPE_POWER){
         case 0:
             bmi160.gyro_cfg.power = BMI160_GYRO_NORMAL_MODE;
             break;
@@ -360,7 +360,7 @@ int bmi160_config_sensor(struct bmi160_dev *device){
             bmi160.gyro_cfg.power = BMI160_GYRO_SUSPEND_MODE;
             break;
         default:
-            printf("ERROR: Invalid Gyrescope Power Mode\n");
+            printf("ERROR: Invalid Gyroscope Power Mode\n");
             return BMI160_E_OUT_OF_RANGE;
     }
 
@@ -383,7 +383,7 @@ int bmi160_FOC_init(struct bmi160_dev *device){
     uint8_t data[1];
 
     //Calculate the Fast Offfset Compensation (FOC) settings
-    data[0] = 0x40;     //Enable Gyrescope
+    data[0] = 0x40;     //Enable Gyroscope
 
     data[0] |= (ACCELEROMETER_COMP_X << 4);     //Set accelerometer X startup state
     data[0] |= (ACCELEROMETER_COMP_Y << 2);     //Set accelerometer Y startup state

@@ -35,9 +35,9 @@
 * @brief            This is the main test program for the MAX78000 EVkit BMI160 IMU drivers.
 *                   This main function will perform five (5) basic driver functions:
 *                       1) Initilize the BMI160 IMU
-*                       2) Perform BMI160 self-test for accelerometer and verify result
-*                       3) Perform BMI160 self-test for Gyrescope and verify results
-*                       4) Configure the accelerometer and gyrescope based on user definitions
+*                       2) Perform BMI160 self-test for Accelerometer and verify result
+*                       3) Perform BMI160 self-test for Gyroscope and verify results
+*                       4) Configure the Accelerometer and Gyroscope based on user definitions
 *                           in the bmi160_max78000evkit.h header file
 *                       5) Continuosly read and display the BMI160 sesor data in format(s)
 *                           specefied by user in the bmi160_max78000evkit.h header file
@@ -65,12 +65,12 @@ struct bmi160_sensor_data bmi160_gyro;
     float ACC_Conversion_Factor = (float)(16384 >> ACCELEROMETER_RANGE);
 #endif
 
-//Float Variables for Gyrescope Degrees/Second Calculations
+//Float Variables for Gyroscope Degrees/Second Calculations
 #ifdef ENABLE_GYR_DEG_PER_SEC
     float gyr_x;
     float gyr_y;
     float gyr_z;
-    float GYR_Conversion_Factor = (float)(262.4/(1<<GYRESCOPE_RANGE));
+    float GYR_Conversion_Factor = (float)(262.4/(1<<GYROSCOPE_RANGE));
 #endif
 
 
@@ -91,7 +91,7 @@ int main() {
     }
     else printf("SUCCESS\n");
 
-    //Self-Test for accelerometer
+    //Self-Test for Accelerometer
     printf("Result for Self Test Accelerometer: ");
     if ( (result = bmi160_perform_self_test(BMI160_ACCEL_ONLY, &bmi160)) != BMI160_OK) {
         printf("FAILURE\n");
@@ -100,7 +100,7 @@ int main() {
     else printf("SUCCESS\n");
    
     //Self-Test for gryrescope
-    printf("Result for Self Test Gyrescope: ");
+    printf("Result for Self Test Gyroscope: ");
     if ( (result = bmi160_perform_self_test(BMI160_GYRO_ONLY, &bmi160)) != BMI160_OK) {
         printf("FAILURE\n");
         while(1);
@@ -134,8 +134,8 @@ int main() {
         //Read data from the sensor
         bmi160_get_sensor_data((BMI160_ACCEL_SEL | BMI160_GYRO_SEL), &bmi160_accel, &bmi160_gyro, &bmi160);
         
-        //Dispaly the accelerometer and gyro readings
-        printf("Observed Accelerometer and Gyrescope Data\n");
+        //Dispaly the Accelerometer and gyro readings
+        printf("Observed Accelerometer and Gyroscope Data\n");
         printf("------------------------------------------\n\n");
         
         if(ENABLE_ACC_GRAVITY){
