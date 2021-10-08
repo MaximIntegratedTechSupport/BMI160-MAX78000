@@ -28,7 +28,7 @@ Now that the hardware is connected and the firmware has been imported, and the s
 
 1. Open up the downloaded project in you VS-Code envioroment
 2. Open the main.c file from the file explorer window
-3. Press "F5" to start debugging (NOTE: The VS-Code "Start Debugging" command will automatically build the project and flash the program to the MAX78000)
+3. Press "F5" to start debugging (NOTE: The VS-Code "Start Debugging" command will automatically build the project and flash the program to the MAX78000 EVKit)
 4. Verify that all initilization and configuration tests and procedures are successful when firmware program begins on your serial terminal
 ![Correct Initialization](https://github.com/MaximIntegratedTechSupport/BMI160-MAX78000/blob/master/img/Correct_Initialization.jpg)
 5. View data being printed to the serial monitor (NOTE: Picking up the MAX78000 EVKit and moving it to new orientations should be reflected on the serial output)
