@@ -88,7 +88,7 @@ int init_bmi160(struct bmi160_dev* out) {
     }
 
     //Wait Maximum reset time
-    bmi160.delay_ms(80);
+    bmi160.delay_ms(100);
 
     return BMI160_OK;
 }
@@ -184,192 +184,28 @@ static int8_t i2c_write(uint8_t dev_addr, uint8_t reg_addr, uint8_t *data, uint1
 }
 
 /*****************************************************************************************************************************/
-int bmi160_config_sensor(struct bmi160_dev *device){
+int bmi160_config_sensor(){
     
     int rslt = BMI160_OK;
-
-    switch(ACCELEROMETER_RANGE){
-        case 0:
-            bmi160.accel_cfg.range = BMI160_ACCEL_RANGE_2G;
-            break;
-        case 1:
-            bmi160.accel_cfg.range = BMI160_ACCEL_RANGE_4G;
-            break;
-        case 2:
-            bmi160.accel_cfg.range = BMI160_ACCEL_RANGE_8G;
-            break;
-        case 3:
-            bmi160.accel_cfg.range = BMI160_ACCEL_RANGE_16G;
-            break;
-        default:
-            printf("ERROR: Invalid Accelerometer Range\n");
-            return BMI160_E_OUT_OF_RANGE; 
-    }
     
-    switch(ACCELEROMETER_DATARATE){
-        case 0:
-            bmi160.accel_cfg.odr = BMI160_ACCEL_ODR_12_5HZ;
-            break;
-        case 1:
-            bmi160.accel_cfg.odr = BMI160_ACCEL_ODR_25HZ;
-            break;
-        case 2:
-            bmi160.accel_cfg.odr = BMI160_ACCEL_ODR_50HZ;
-            break;
-        case 3:
-            bmi160.accel_cfg.odr = BMI160_ACCEL_ODR_100HZ;
-            break;
-        case 4:
-            bmi160.accel_cfg.odr = BMI160_ACCEL_ODR_200HZ;
-            break;
-        case 5:
-            bmi160.accel_cfg.odr = BMI160_ACCEL_ODR_400HZ;
-            break;
-        case 6:
-            bmi160.accel_cfg.odr = BMI160_ACCEL_ODR_800HZ;
-            break;
-        case 7:
-            bmi160.accel_cfg.odr = BMI160_ACCEL_ODR_1600HZ;
-            break;
-        default:
-            printf("ERROR: Invalid Accelerometer Data Rate\n");
-            return BMI160_E_OUT_OF_RANGE;
-            break;
-    }
-    
-    switch(ACCELEROMETER_BANDWITH){
-        case 0:
-            bmi160.accel_cfg.bw = BMI160_ACCEL_BW_OSR4_AVG1;
-            break;
-        case 1:
-            bmi160.accel_cfg.bw = BMI160_ACCEL_BW_OSR2_AVG2;
-            break;
-        case 2:
-            bmi160.accel_cfg.bw = BMI160_ACCEL_BW_NORMAL_AVG4;
-            break;
-        case 3:
-            bmi160.accel_cfg.bw = BMI160_ACCEL_BW_RES_AVG8;
-            break;
-        case 4:
-            bmi160.accel_cfg.bw = BMI160_ACCEL_BW_RES_AVG16;
-            break;
-        case 5:
-            bmi160.accel_cfg.bw = BMI160_ACCEL_BW_RES_AVG32;
-            break;
-        case 6:
-            bmi160.accel_cfg.bw = BMI160_ACCEL_BW_RES_AVG64;
-            break;
-        case 7:
-            bmi160.accel_cfg.bw = BMI160_ACCEL_BW_RES_AVG128;
-            break;
-        default:
-            printf("ERROR: Invalid Accelerometer Bandwith\n");
-            return BMI160_E_OUT_OF_RANGE;
-    }
+    //Select accelerometer configuration
+    bmi160.accel_cfg.range = ACCELEROMETER_RANGE;
+    bmi160.accel_cfg.odr = ACCELEROMETER_DATARATE;
+    bmi160.accel_cfg.bw = ACCELEROMETER_BANDWITH;
+    bmi160.accel_cfg.power = ACCELEROMETER_POWER;
 
-    switch(ACCELEROMETER_POWER){
-        case 0:
-            bmi160.accel_cfg.power = BMI160_ACCEL_NORMAL_MODE;
-            break;
-        case 1:
-            bmi160.accel_cfg.power = BMI160_ACCEL_LOWPOWER_MODE;
-            break;
-        case 2:
-            bmi160.accel_cfg.power = BMI160_ACCEL_SUSPEND_MODE;
-            break;
-        default:
-            printf("ERROR: Invalid Accelerometer Power Mode\n");
-            return BMI160_E_OUT_OF_RANGE;
-    }
+    //Select gyroscope configuration
+    bmi160.gyro_cfg.range = GYROSCOPE_RANGE;
+    bmi160.gyro_cfg.odr = GYROSCOPE_DATARATE;
+    bmi160.gyro_cfg.bw = GYROSCOPE_BANDWITH;
+    bmi160.gyro_cfg.power = GYROSCOPE_POWER;
 
-    switch(GYROSCOPE_RANGE){
-        case 0:
-            bmi160.gyro_cfg.range = BMI160_GYRO_RANGE_125_DPS;
-            break;
-        case 1:
-            bmi160.gyro_cfg.range = BMI160_GYRO_RANGE_250_DPS;
-            break;
-        case 2:
-            bmi160.gyro_cfg.range = BMI160_GYRO_RANGE_500_DPS;
-            break;
-        case 3:
-            bmi160.gyro_cfg.range = BMI160_GYRO_RANGE_1000_DPS;
-            break;
-        case 4:
-            bmi160.gyro_cfg.range = BMI160_GYRO_RANGE_2000_DPS;
-            break;
-        default:
-            printf("ERROR: Invalid Gyrosocope Range\n");
-            return BMI160_E_OUT_OF_RANGE; 
-    }
-    
-    switch(GYROSCOPE_DATARATE){
-        case 0:
-            bmi160.gyro_cfg.odr = BMI160_GYRO_ODR_25HZ;
-            break;
-        case 1:
-            bmi160.gyro_cfg.odr = BMI160_GYRO_ODR_50HZ;
-            break;
-        case 2:
-            bmi160.gyro_cfg.odr = BMI160_GYRO_ODR_100HZ;
-            break;
-        case 3:
-            bmi160.gyro_cfg.odr = BMI160_GYRO_ODR_200HZ;
-            break;
-        case 4:
-            bmi160.gyro_cfg.odr = BMI160_GYRO_ODR_400HZ;
-            break;
-        case 5:
-            bmi160.gyro_cfg.odr = BMI160_GYRO_ODR_800HZ;
-            break;
-        case 6:
-            bmi160.gyro_cfg.odr = BMI160_GYRO_ODR_1600HZ;
-            break;
-        case 7:
-            bmi160.gyro_cfg.odr = BMI160_GYRO_ODR_3200HZ;
-            break;
-        default:
-            printf("ERROR: Invalid Gyroscope Data Rate\n");
-            return BMI160_E_OUT_OF_RANGE;
-            break;
-    }
-    
-    switch(GYROSCOPE_BANDWITH){
-        case 0:
-            bmi160.gyro_cfg.bw = BMI160_GYRO_BW_NORMAL_MODE;
-            break;
-        case 1:
-            bmi160.gyro_cfg.bw = BMI160_GYRO_BW_OSR2_MODE;
-            break;
-        case 2:
-            bmi160.gyro_cfg.bw = BMI160_GYRO_BW_OSR4_MODE;
-            break;
-        default:
-            printf("ERROR: Invalid Gyroscope Sample rate\n");
-            return BMI160_E_OUT_OF_RANGE;
-    }
-
-    switch(GYROSCOPE_POWER){
-        case 0:
-            bmi160.gyro_cfg.power = BMI160_GYRO_NORMAL_MODE;
-            break;
-        case 1:
-            bmi160.gyro_cfg.power = BMI160_GYRO_FASTSTARTUP_MODE;
-            break;
-        case 2:
-            bmi160.gyro_cfg.power = BMI160_GYRO_SUSPEND_MODE;
-            break;
-        default:
-            printf("ERROR: Invalid Gyroscope Power Mode\n");
-            return BMI160_E_OUT_OF_RANGE;
-    }
-
-    // Set the default sensor configuration
+    //Set sensor configuration
     if((rslt = bmi160_set_sens_conf(&bmi160)) != BMI160_OK){
         printf("Error configuring Accelerometer and Gyroscope (Error Code: %d)\n\n\n",rslt);
         return (rslt);
     }
-    
+
     //Allow registers time to update
     bmi160.delay_ms(100);
     
@@ -377,7 +213,7 @@ int bmi160_config_sensor(struct bmi160_dev *device){
 }
 
 /*****************************************************************************************************************************/
-int bmi160_FOC_init(struct bmi160_dev *device){
+int bmi160_FOC_init(){
     
     int rslt = BMI160_OK;
     uint8_t data[1];
@@ -409,14 +245,14 @@ int bmi160_FOC_init(struct bmi160_dev *device){
     printf("Calculating Offset...\n\n");
 
     //Write setup config for FOC
-    if((rslt = bmi160_set_regs(0x69, data, 1, device)) != BMI160_OK) {
+    if((rslt = bmi160_set_regs(BMI160_FOC_CONF_ADDR, data, 1, &bmi160)) != BMI160_OK) {
         printf("Error setting config register for Fast Offset Correction (Error: %d)\n\n",rslt);
         return (rslt);
     }
 
     //Start FOC calibration
     data[0] = BMI160_START_FOC_CMD;
-    if((rslt = bmi160_set_regs(0x7E, data, 1, device) != BMI160_OK)){
+    if((rslt = bmi160_set_regs(BMI160_COMMAND_REG_ADDR, data, 1, &bmi160) != BMI160_OK)){
         printf("Error initialising FOC (Error: %d)\n\n",rslt);
         return (rslt);
     }
@@ -426,7 +262,7 @@ int bmi160_FOC_init(struct bmi160_dev *device){
 
     //Enable offset
     data[0] |= 0xC0;
-    if((rslt = bmi160_set_regs(0x77, data, 1, device)) != BMI160_OK){
+    if((rslt = bmi160_set_regs(BMI160_OFFSET_CONF_ADDR, data, 1, &bmi160)) != BMI160_OK){
         printf("Error enabling offset (Error: %d)\n\n",rslt);
         return (rslt);
     }

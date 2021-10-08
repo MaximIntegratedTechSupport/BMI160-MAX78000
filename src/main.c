@@ -51,28 +51,22 @@
 #include <stdio.h>
 #include "bmi160_max78000evkit.h"
 
-/*  Global Variables for Conversion calculations  */
+/***** Serial Output Options *****/
+
+//Sample Rate
+#define SAMPLE_DELAY            1000 //Continous sample rate in ms (Default = 1000)
+
+//Serial Output Formats    
+#define ENABLE_ACC_GRAVITY      1   //Accelermoter data output in unit of gravatis (0: DISABLE, 1: ENABLE)
+#define ENABLE_GYR_DEG_PER_SEC  1   //Gyroscope data output in unit of degrees/second  (0: DISABLE, 1: ENABLE)
+#define ENABLE_BINARY           1   //Data output in unit of binary sensor output   (0: DISABLE, 1: ENABLE)
+
+
+/***** Global Variables *****/
 
 //Structurs for holding Data being read
 struct bmi160_sensor_data bmi160_accel;
 struct bmi160_sensor_data bmi160_gyro;
-
-//Float Variables for Accelerometer Force Calculations
-#ifdef ENABLE_ACC_GRAVITY
-    float acc_x;
-    float acc_y;
-    float acc_z;
-    float ACC_Conversion_Factor = (float)(16384 >> ACCELEROMETER_RANGE);
-#endif
-
-//Float Variables for Gyroscope Degrees/Second Calculations
-#ifdef ENABLE_GYR_DEG_PER_SEC
-    float gyr_x;
-    float gyr_y;
-    float gyr_z;
-    float GYR_Conversion_Factor = (float)(262.4/(1<<GYROSCOPE_RANGE));
-#endif
-
 
 // This test program shall initialize the BMI160, validate the built-in self-test, and test additional bmi160 driver functions.
 int main() {
@@ -109,17 +103,72 @@ int main() {
 
     //Set default config for sensors (Settings are specefied in bmi160_max78000.h file)
     printf("Result for Sensor Configuration: ");
-    if ((result = bmi160_config_sensor(&bmi160)) != BMI160_OK) {    
+    if ((result = bmi160_config_sensor()) != BMI160_OK) {    
         printf("FAILURE\n");
         while(1);
     }
     else printf("SUCCESS\n\n\n");
     
+    //Select Conversion Factor for Accelerometer Gravity Output
+    #ifdef ENABLE_ACC_GRAVITY
+        float acc_x;
+        float acc_y;
+        float acc_z;
+        float ACC_Conversion_Factor;
+        switch(ACCELEROMETER_RANGE){
+            case BMI160_ACCEL_RANGE_2G:
+                ACC_Conversion_Factor = 16384.0;
+                break;
+            case BMI160_ACCEL_RANGE_4G:
+                ACC_Conversion_Factor = 8192.0;
+                break;
+            case BMI160_ACCEL_RANGE_8G:
+                ACC_Conversion_Factor = 4096.0;
+                break;
+            case BMI160_ACCEL_RANGE_16G:
+                ACC_Conversion_Factor = 2048.0;
+                break;
+            default:
+                printf("Undefined Accelerometer Range Setting\n");
+                ACC_Conversion_Factor = 1;
+                break;
+        }
+    #endif
+
+    //Select Conversion Factor for Gyroscope Degrees/Second Output
+    #ifdef ENABLE_GYR_DEG_PER_SEC
+        float gyr_x;
+        float gyr_y;
+        float gyr_z;
+        float GYR_Conversion_Factor;
+        switch(GYROSCOPE_RANGE){
+            case BMI160_GYRO_RANGE_125_DPS:
+                GYR_Conversion_Factor = 262.4;
+                break;
+            case BMI160_GYRO_RANGE_250_DPS:
+                GYR_Conversion_Factor = 131.2;
+                break;
+            case BMI160_GYRO_RANGE_500_DPS:
+                GYR_Conversion_Factor = 65.6;
+                break;
+            case BMI160_GYRO_RANGE_1000_DPS:
+                GYR_Conversion_Factor = 32.8;
+                break;
+            case BMI160_GYRO_RANGE_2000_DPS:
+                GYR_Conversion_Factor = 16.4;
+                break;
+            default:
+                printf("Undefined Gyroscope Range Setting\n");
+                GYR_Conversion_Factor = 1;
+                break;
+        }
+    #endif
+
     //Configure Offset
-    if ((result = bmi160_FOC_init(&bmi160)) != BMI160_OK) {
-        printf("FAILURE\n");
+    if ((result = bmi160_FOC_init()) != BMI160_OK) {
+        printf("Offset Calibration Status: FAILURE\n");
         while(1);
-    }
+    } 
     else{
         bmi160.delay_ms(3000);
         

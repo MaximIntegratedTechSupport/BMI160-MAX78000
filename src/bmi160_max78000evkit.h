@@ -50,30 +50,22 @@
 
 //Setting Comments with an asterisks(*) refer to default conditions
 
-//Delay Settings
-#define SAMPLE_DELAY            1000 //Continous sample rate in ms (Default = 1000)
-
-//Serial Output Settings    
-#define ENABLE_ACC_GRAVITY      1   //Accelermoter data output in unit of gravatis (0: DISABLE, 1: *ENABLE)
-#define ENABLE_GYR_DEG_PER_SEC  1   //gyroscope data output in units of degrees/second  (0: DISABLE, 1: *ENABLE)
-#define ENABLE_BINARY           1   //Data output in unit of binary sensor output   (0: DISABLE, 1: *ENABLE)
-
 //Accelerometer settings
-#define ACCELEROMETER_RANGE     3   //0: 2g,    1: 4g,  2: 8g,  3: *16g
-#define ACCELEROMETER_DATARATE  3   //0: 12.5 Hz,   1: 25 Hz,   2: 50 Hz,   3: *100 Hz,  4: 200 Hz,  5: 400 Hz,  6: 800 Hz, 7: 1600 Hz 
-#define ACCELEROMETER_BANDWITH  2   //0: AVG 1, 1: AVG 2,   2: *AVG 4,   3: AVG 8,   4: AVG 16,  5: AVG 32,  6: AVG 64,  7: AVG 128
-#define ACCELEROMETER_POWER     0   //0: *NORMAL,    1: LOW-POWER, 2: SUSPEND
+#define ACCELEROMETER_RANGE     BMI160_ACCEL_RANGE_16G          //Default: 16g
+#define ACCELEROMETER_DATARATE  BMI160_ACCEL_ODR_100HZ          //Default: 100 Hz
+#define ACCELEROMETER_BANDWITH  BMI160_ACCEL_BW_NORMAL_AVG4     //Default: AVG 4
+#define ACCELEROMETER_POWER     BMI160_ACCEL_NORMAL_MODE        //Default: NORMAL
 
 //gyroscope settings
-#define GYROSCOPE_RANGE         4   //0: 125 dps,   1: 250 dps, 2: 500 dps, 3: 1000 dps,    4: *2000 dps
-#define GYROSCOPE_DATARATE      2   //0: 25 Hz,   1: 50 Hz,   2: *100 Hz,  3: 200 Hz,  4: 400 Hz,  5: 800 Hz,  6: 1600 Hz,   7: 3200 Hz
-#define GYROSCOPE_BANDWITH      0   //0: *NORMAL,    1: OVERSAMPLE 2x,   2: OVERSAMPLE 4x
-#define GYROSCOPE_POWER         0   //0: *NORMAL,    1: FAST-START,   2: SUSPEND
+#define GYROSCOPE_RANGE         BMI160_GYRO_RANGE_2000_DPS      //Default: 2000 dps
+#define GYROSCOPE_DATARATE      BMI160_GYRO_ODR_100HZ           //Default: 100 Hz
+#define GYROSCOPE_BANDWITH      BMI160_GYRO_BW_NORMAL_MODE      //Default: NORMAL
+#define GYROSCOPE_POWER         BMI160_GYRO_NORMAL_MODE         //Default: NORMAL
 
 //Accelerometer Offset Compensation (Default assumes MAX78000 EVKit is sitting on a flat surface display facing upwards)
-#define ACCELEROMETER_COMP_X    3   //0: DISABLED,  1: Positive 1g, 2: Negative 1g, 3: *Zero Force
-#define ACCELEROMETER_COMP_Y    3   //0: DISABLED,  1: Positive 1g, 2: Negative 1g, 3: *Zero Force
-#define ACCELEROMETER_COMP_Z    2   //0: DISABLED,  1: Positive 1g, 2: *Negative 1g, 3: Zero Force
+#define ACCELEROMETER_COMP_X    BMI160_FOC_ACCEL_0G             //Default: 0g
+#define ACCELEROMETER_COMP_Y    BMI160_FOC_ACCEL_0G             //Default: 0g
+#define ACCELEROMETER_COMP_Z    BMI160_FOC_ACCEL_NEGATIVE_G     //Default: Negative 1g
 
 //I2C Paramaters (Default values should not be modified)
 #define I2C_MASTER      MXC_I2C2    //MXC_I2C2: *I2C Port 2
@@ -100,18 +92,16 @@ int init_bmi160();
 * @brief        Configure BMI160 accelerometer and gyroscope based on user definitions in 
 *               the bmi160_max78000.h header file
 *
-* @param[in]    device      Pointer to initialized, bmi160 structure
 * @return       BMI160_OK (Success), Error Code (Failure)
 */
-int bmi160_config_sensor(struct bmi160_dev *device);
+int bmi160_config_sensor();
 
 /**
 * @brief        Initialize and enable the gyroscope and accelerometer fast offset
 *               compensation feature
 *
-* @param[in]    device      Pointer to initialized, bmi160 structure
 * @return       BMI160_OK (Success), Error Code (Failure)
 */
-int bmi160_FOC_init(struct bmi160_dev *device);
+int bmi160_FOC_init();
 
 #endif  /* _MXC_I2C_H_ */
