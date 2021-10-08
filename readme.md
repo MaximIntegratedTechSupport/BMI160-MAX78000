@@ -1,7 +1,7 @@
 # Introduction
 This document disscusses using the MAX78000 EVKit drivers for the [BMI160 Inertial Movement Unit (IMU)](https://community.bosch-sensortec.com/t5/Knowledge-base/BMI160-Series-IMU-Design-Guide/ta-p/7376).
 
-# Requirments 
+# Requirements 
 - MAX78000 EVKit Connected to PC via micro-USB (power) and the MAX32625 PICO Adapter (programmer and debugger)
 - [Maxim Micros SDK](https://www.maximintegrated.com/content/maximintegrated/en/design/software-description.html/swpart=SFW0010820A)
 - [VS-Code with Maxim Support](https://github.com/MaximIntegratedTechSupport/VSCode-Maxim)
