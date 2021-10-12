@@ -62,15 +62,16 @@ The driver implementation provides a global `bmi160_dev` struct called `bmi160`.
 * The initialization function `init_bmi160` has been called.  This sets up I2C communication, links callback functions, and initializes the global `bmi160` struct.
 * The configuration function `bmi160_config_sensor` has been called.  This configures the BMI160 with the options set in the `bmi160_max78000evkit.h` header file.
 
-With the above conditions met, the adress of the global `bmi160` struct can be passed as an argument into subsequent driver functions from `bmi160.h`.
+With the above conditions met, the adress of the global `bmi160` struct can be passed as an argument into subsequent driver functions from `bmi160.h`.  See the example project for a usage demonstration.
 
 ## Adding the Drivers a Project
 The drivers are distributed in source code format under the "driver" folder of the release package.
 
-To use the drivers in a new project:
-* Copy the "driver" folder to a location accessible by the new project
+To use the drivers in your own project:
+* Copy the "driver" folder to a location accessible by your project
 * Add the `bmi160.c` and `bmi160_max78000evkit.c` source files to the build
-* Add the "driver" folder to the build's search path for both include files and source files.  For an example, see the Makefile from the demo project:
-* Add the "driver" folder to your project's include and browse paths for source code lookups.  If you're using [VSCode-Maxim](https://github.com/MaximIntegratedTechSupport/VSCode-Maxim), see the VSCode-Maxim [readme](https://github.com/MaximIntegratedTechSupport/VSCode-Maxim#setting-search-paths-for-intellisense) for more details on this.
+* Add the "driver" folder to the build's search path for both include files and source files.
+* Add the "driver" folder to your IDE's include and browse paths for source code lookups.  If you're using [VSCode-Maxim](https://github.com/MaximIntegratedTechSupport/VSCode-Maxim), see the VSCode-Maxim [readme](https://github.com/MaximIntegratedTechSupport/VSCode-Maxim#setting-search-paths-for-intellisense) for more details on this.
 
+See the Makefile of the example project for an example:
 ![Makefile](https://github.com/MaximIntegratedTechSupport/BMI160-MAX78000/blob/master/img/Makefile.JPG)
