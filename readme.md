@@ -1,23 +1,25 @@
 # Introduction
 This document disscusses using the MAX78000 EVKit drivers for the [BMI160 Inertial Movement Unit (IMU)](https://community.bosch-sensortec.com/t5/Knowledge-base/BMI160-Series-IMU-Design-Guide/ta-p/7376).
 
+This project includes two main components:
+* The BMI160 driver implementation for the MAX78000EVKIT.  This can be found under the "driver" folder of the release package.
+* A demo/example program showing how to use the drivers and excercise the BMI160.  This can be found under the "example" folder of the release package.
+
 # Requirements 
 - MAX78000 EVKit Connected to PC via micro-USB (power) and the MAX32625 PICO Adapter (programmer and debugger)
 - [Maxim Micros SDK](https://www.maximintegrated.com/content/maximintegrated/en/design/software-description.html/swpart=SFW0010820A)
 - [VS-Code with Maxim Support](https://github.com/MaximIntegratedTechSupport/VSCode-Maxim)
 
-# Initial Setup
+# Running the Example
 ## Hardware Setup
 Ensure that you MAX78000 EVKit is properly connected to your PC. There should be a micro-USB cable connected directly to the MAX78000 EVKit that is used for powering the device. A blue LED power LED should turn on to indicate that the board is being powered.
 
 A second connection must be made to the MAX78000 EVKit on the SWD port. The SWD port will be connected to the MAX32625 PICO programmer board. This connection will allow for programming the MAX78000 chip and relaying data back to the PC from the communication port. Please visit the [MAX78000 EVKit Product Page](https://www.maximintegrated.com/en/products/microcontrollers/MAX78000EVKIT.html) for additional setup information. 
 
 ## Download Firmware
-Import the most recent version of the MAX78000 EVKit drivers for the BMI160 IMU in the desired file location on you pc. Make sure to use a recursive pull request so that all submodules are downloaded. Example pull command:
+Download the latest [Release](https://github.com/MaximIntegratedTechSupport/BMI160-MAX78000) and extract it to an accessible location.  **Note: There must not be any spaces in file path of the extraction location**
 
-	git clone --recurse-submodules https://github.com/MaximIntegratedTechSupport/BMI160-MAX78000.git
-
-# Evaluating the Sensor's Output
+## Connect a Serial Terminal
 In order to validate that the BMI160 is functioning as expected, configuration results and data measurements are sent to the PC serial port. These readings can be helpful for viewing real-time data, checking self-test results, and ensuring that the sensor was configured correctly. In order to view the sensor output:
 
 1. Open your serial terminal viewer of choice
@@ -27,10 +29,10 @@ In order to validate that the BMI160 is functioning as expected, configuration r
 
 3. Verify that the terminal is connected
 
-# Uploading the Sample Code
-Now that the hardware is ready, the firmware has been downloaded, and the serial monitor is connected, it is time to run the program. In order to run the program:
+## Uploading the Sample Code
+Now that the hardware is ready, the project has been downloaded, and the serial monitor is connected, it is time to run the program. In order to run the program:
 
-1. Open up the downloaded project in you VS-Code environment
+1. Open up the downloaded project in your VS-Code environment with `File -> Open Folder` on the "example" folder.
 2. Open the main.c file from the file explorer window
 3. Press "F5" to start debugging (NOTE: The VS-Code "Start Debugging" command will automatically build the project and flash the program to the MAX78000 EVKit)
 4. Verify that all sensor initialization and configuration tests and procedures are successful when the firmware program begins. This information will be displayed on the serial terminal viewer as shown below:
@@ -41,7 +43,7 @@ Now that the hardware is ready, the firmware has been downloaded, and the serial
 
 ![Data Out](https://github.com/MaximIntegratedTechSupport/BMI160-MAX78000/blob/master/img/Reading_Data.jpg)
 
-# Configuring the Sensors
+## Configuring the Sensors
 The sample program in main.c pulls configuration information from the bmi160_max78000evkit.h header file. The configuration definitions are shown below.
 
 ![Definitions](https://github.com/MaximIntegratedTechSupport/BMI160-MAX78000/blob/master/img/Config_Definitions.JPG)
@@ -53,3 +55,22 @@ In order to edit these settings, you can change definition values based on the b
 By simply changing the *ACCELEROMETER_RANGE* value from *BMI160_ACCEL_RANGE_16G* to a new setting found in the bmi160_defs.h file, such as *BMI160_ACCEL_RANGE_4G*, the program will make the necessary change the next time you re-build and upload the firmware. This allows for quick testing of different accelerometer and gyroscope configurations.
 
 *NOTE: Any of the predefined configurations are compatible with the sensor configuration function. Please refer to the [BMI160 Design Guide](https://community.bosch-sensortec.com/t5/Knowledge-base/BMI160-Series-IMU-Design-Guide/ta-p/7376) for configuration specific information.*
+
+# Using the drivers
+## Design
+The driver implementation provides a global `bmi160_dev` struct called `bmi160`.  This is intended to be used with the baseline `bmi160.h` driver functions after the following conditions have been met:
+* The initialization function `init_bmi160` has been called.  This sets up I2C communication, links callback functions, and initializes the global `bmi160` struct.
+* The configuration function `bmi160_config_sensor` has been called.  This configures the BMI160 with the options set in the `bmi160_max78000evkit.h` header file.
+
+With the above conditions met, the adress of the global `bmi160` struct can be passed as an argument into subsequent driver functions from `bmi160.h`.
+
+## Adding the Drivers a Project
+The drivers are distributed in source code format under the "driver" folder of the release package.
+
+To use the drivers in a new project:
+* Copy the "driver" folder to a location accessible by the new project
+* Add the `bmi160.c` and `bmi160_max78000evkit.c` source files to the build
+* Add the "driver" folder to the build's search path for both include files and source files.  For an example, see the Makefile from the demo project:
+* Add the "driver" folder to your project's include and browse paths for source code lookups.  If you're using [VSCode-Maxim](https://github.com/MaximIntegratedTechSupport/VSCode-Maxim), see the VSCode-Maxim [readme](https://github.com/MaximIntegratedTechSupport/VSCode-Maxim#setting-search-paths-for-intellisense) for more details on this.
+
+![Makefile](https://github.com/MaximIntegratedTechSupport/BMI160-MAX78000/blob/master/img/Makefile.JPG)

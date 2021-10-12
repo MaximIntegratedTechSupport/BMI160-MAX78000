@@ -75,7 +75,7 @@
 
 /***** Global Variables *****/
 
-struct bmi160_dev bmi160;       // Global bmi160 struct
+struct bmi160_dev bmi160;       // Global bmi160 struct.  Call init_bmi160() and bmi160_config_sensor() to initialize and configure the sensor.  Then, this struct can be used as an argument in the driver functions from bmi160.h
 
 
 /***** Function Prototypes *****/
