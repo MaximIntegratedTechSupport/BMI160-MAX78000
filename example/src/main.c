@@ -76,7 +76,6 @@ int main() {
     printf("Beginning Sensor Intitialization and Self Testing\n");
     printf("-------------------------------------------------\n");
     
-    
     //Initialize Sensor
     printf("Result for Initialization: ");
     if ( (result = init_bmi160()) != BMI160_OK) {
@@ -110,59 +109,59 @@ int main() {
     else printf("SUCCESS\n\n\n");
     
     //Select Conversion Factor for Accelerometer Gravity Output
-    #ifdef ENABLE_ACC_GRAVITY
-        float acc_x;
-        float acc_y;
-        float acc_z;
-        float ACC_Conversion_Factor;
-        switch(ACCELEROMETER_RANGE){
-            case BMI160_ACCEL_RANGE_2G:
-                ACC_Conversion_Factor = 16384.0;
-                break;
-            case BMI160_ACCEL_RANGE_4G:
-                ACC_Conversion_Factor = 8192.0;
-                break;
-            case BMI160_ACCEL_RANGE_8G:
-                ACC_Conversion_Factor = 4096.0;
-                break;
-            case BMI160_ACCEL_RANGE_16G:
-                ACC_Conversion_Factor = 2048.0;
-                break;
-            default:
-                printf("Undefined Accelerometer Range Setting\n");
-                ACC_Conversion_Factor = 1;
-                break;
-        }
-    #endif
+#ifdef ENABLE_ACC_GRAVITY
+    float acc_x;
+    float acc_y;
+    float acc_z;
+    float ACC_Conversion_Factor;
+    switch(ACCELEROMETER_RANGE){
+        case BMI160_ACCEL_RANGE_2G:
+            ACC_Conversion_Factor = 16384.0;
+            break;
+        case BMI160_ACCEL_RANGE_4G:
+            ACC_Conversion_Factor = 8192.0;
+            break;
+        case BMI160_ACCEL_RANGE_8G:
+            ACC_Conversion_Factor = 4096.0;
+            break;
+        case BMI160_ACCEL_RANGE_16G:
+            ACC_Conversion_Factor = 2048.0;
+            break;
+        default:
+            printf("Undefined Accelerometer Range Setting\n");
+            ACC_Conversion_Factor = 1;
+            break;
+    }
+#endif
 
     //Select Conversion Factor for Gyroscope Degrees/Second Output
-    #ifdef ENABLE_GYR_DEG_PER_SEC
-        float gyr_x;
-        float gyr_y;
-        float gyr_z;
-        float GYR_Conversion_Factor;
-        switch(GYROSCOPE_RANGE){
-            case BMI160_GYRO_RANGE_125_DPS:
-                GYR_Conversion_Factor = 262.4;
-                break;
-            case BMI160_GYRO_RANGE_250_DPS:
-                GYR_Conversion_Factor = 131.2;
-                break;
-            case BMI160_GYRO_RANGE_500_DPS:
-                GYR_Conversion_Factor = 65.6;
-                break;
-            case BMI160_GYRO_RANGE_1000_DPS:
-                GYR_Conversion_Factor = 32.8;
-                break;
-            case BMI160_GYRO_RANGE_2000_DPS:
-                GYR_Conversion_Factor = 16.4;
-                break;
-            default:
-                printf("Undefined Gyroscope Range Setting\n");
-                GYR_Conversion_Factor = 1;
-                break;
-        }
-    #endif
+#ifdef ENABLE_GYR_DEG_PER_SEC
+    float gyr_x;
+    float gyr_y;
+    float gyr_z;
+    float GYR_Conversion_Factor;
+    switch(GYROSCOPE_RANGE){
+        case BMI160_GYRO_RANGE_125_DPS:
+            GYR_Conversion_Factor = 262.4;
+            break;
+        case BMI160_GYRO_RANGE_250_DPS:
+            GYR_Conversion_Factor = 131.2;
+            break;
+        case BMI160_GYRO_RANGE_500_DPS:
+            GYR_Conversion_Factor = 65.6;
+            break;
+        case BMI160_GYRO_RANGE_1000_DPS:
+            GYR_Conversion_Factor = 32.8;
+            break;
+        case BMI160_GYRO_RANGE_2000_DPS:
+            GYR_Conversion_Factor = 16.4;
+            break;
+        default:
+            printf("Undefined Gyroscope Range Setting\n");
+            GYR_Conversion_Factor = 1;
+            break;
+    }
+#endif
 
     //Configure Offset
     if ((result = bmi160_FOC_init()) != BMI160_OK) {
@@ -178,6 +177,8 @@ int main() {
         printf("Starting data measurments\n\n\n");
         bmi160.delay_ms(2000);
     }
+
+    // Main loop
     while(1){
         
         //Read data from the sensor
@@ -187,37 +188,34 @@ int main() {
         printf("Observed Accelerometer and Gyroscope Data\n");
         printf("------------------------------------------\n\n");
         
-        if(ENABLE_ACC_GRAVITY){
+#ifdef ENABLE_ACC_GRAVITY
+        //Caluculate force in terms of g's
+        acc_x = bmi160_accel.x/ACC_Conversion_Factor;
+        acc_y = bmi160_accel.y/ACC_Conversion_Factor;
+        acc_z = bmi160_accel.z/ACC_Conversion_Factor;
+        
+        //print results
+        printf("Gravities:\n");
+        printf("ax:%.2f g\tay:%.2f g\taz:%.2f g\n\n", acc_x, acc_y, acc_z);
+#endif
 
-            //Caluculate force in terms of g's
-            acc_x = bmi160_accel.x/ACC_Conversion_Factor;
-            acc_y = bmi160_accel.y/ACC_Conversion_Factor;
-            acc_z = bmi160_accel.z/ACC_Conversion_Factor;
-            
-            //print results
-            printf("Gravities:\n");
-            printf("ax:%.2f g\tay:%.2f g\taz:%.2f g\n\n", acc_x, acc_y, acc_z);
-        }
+#ifdef ENABLE_GYR_DEG_PER_SEC
+        //Caluculate force in terms of g's
+        gyr_x = bmi160_gyro.x/GYR_Conversion_Factor;
+        gyr_y = bmi160_gyro.y/GYR_Conversion_Factor;
+        gyr_z = bmi160_gyro.z/GYR_Conversion_Factor;
+        
+        //print results
+        printf("Degrees per second:\n");
+        printf("ax:%.1f deg/s\tay:%.1f deg/s\taz:%.1f deg/s\n\n", gyr_x, gyr_y, gyr_z);
+#endif
 
-        if(ENABLE_GYR_DEG_PER_SEC){
-
-            //Caluculate force in terms of g's
-            gyr_x = bmi160_gyro.x/GYR_Conversion_Factor;
-            gyr_y = bmi160_gyro.y/GYR_Conversion_Factor;
-            gyr_z = bmi160_gyro.z/GYR_Conversion_Factor;
-            
-            //print results
-            printf("Degrees per second:\n");
-            printf("ax:%.1f deg/s\tay:%.1f deg/s\taz:%.1f deg/s\n\n", gyr_x, gyr_y, gyr_z);
-        }
-
-        if(ENABLE_BINARY){
-            
-            //Print Sensor Data
-            printf("BINARY:\n");
-            printf("ax:%d\tay:%d\taz:%d\n", bmi160_accel.x, bmi160_accel.y, bmi160_accel.z);
-            printf("gx:%d\tgy:%d\tgz:%d\n\n", bmi160_gyro.x, bmi160_gyro.y, bmi160_gyro.z);
-        }
+#ifdef ENABLE_BINARY
+        //Print Sensor Data
+        printf("BINARY:\n");
+        printf("ax:%d\tay:%d\taz:%d\n", bmi160_accel.x, bmi160_accel.y, bmi160_accel.z);
+        printf("gx:%d\tgy:%d\tgz:%d\n\n", bmi160_gyro.x, bmi160_gyro.y, bmi160_gyro.z);
+#endif
         
         //Delay between samples
         bmi160.delay_ms(SAMPLE_DELAY);   

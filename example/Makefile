@@ -42,11 +42,11 @@ SRCS += bmi160_max78000evkit.c
 
 # Where to find source files for this project
 VPATH += ./src
-VPATH += ./BMI160_driver
+VPATH += ../driver
 
 # Where to find header files for this project
 IPATH += ./src
-IPATH += ./BMI160_driver
+IPATH += ../driver
 
 # Set compiler flags
 PROJ_CFLAGS+=-Wall # Enable warnings
