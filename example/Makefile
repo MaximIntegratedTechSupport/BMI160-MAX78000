@@ -29,6 +29,7 @@
 # property whatsoever. Maxim Integrated Products, Inc. retains all
 # ownership rights.
 #******************************************************************************
+# https://github.com/MaximIntegratedTechSupport/VSCode-Maxim
 
  ###############################################################################
 # Main configuration
