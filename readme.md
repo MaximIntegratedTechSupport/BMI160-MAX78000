@@ -64,7 +64,7 @@ The driver implementation provides a global `bmi160_dev` struct called `bmi160`.
 
 With the above conditions met, the adress of the global `bmi160` struct can be passed as an argument into subsequent driver functions from `bmi160.h`.  See the example project for a usage demonstration.
 
-## Adding the Drivers a Project
+## Adding the Drivers to a Project
 The drivers are distributed in source code format under the "driver" folder of the release package.
 
 To use the drivers in your own project:
